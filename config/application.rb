@@ -30,7 +30,7 @@ module Grepp
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    # Add JWT middleware at the top of the stack
-    config.middleware.insert_after ActionDispatch::HostAuthorization, JwtMiddleware
+    # Add JWT middleware
+    config.middleware.use JwtMiddleware
   end
 end
