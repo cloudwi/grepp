@@ -35,6 +35,6 @@ module Grepp
     config.i18n.available_locales = [ :ko, :en ]
 
     # Add JWT middleware
-    config.middleware.use JwtMiddleware
+    config.middleware.use Middleware::JwtMiddleware
   end
 end

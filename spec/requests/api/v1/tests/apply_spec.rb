@@ -7,7 +7,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
   let(:headers) { { "Authorization" => "Bearer #{token}" } }
   let(:valid_params) do
     {
-      amount: 45000,
+      amount: 50000,
       payment_method: "kakaopay"
     }
   end
@@ -24,7 +24,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         expect(json["message"]).to eq("시험 응시 신청이 완료되었습니다.")
         expect(json["data"]["test_id"]).to eq(test.id)
         expect(json["data"]["test_title"]).to eq(test.title)
-        expect(json["data"]["payment"]["amount"]).to eq(45000)
+        expect(json["data"]["payment"]["amount"]).to eq(50000)
         expect(json["data"]["payment"]["payment_method"]).to eq("paypal")
         expect(json["data"]["payment"]["status"]).to eq("completed")
 
@@ -34,7 +34,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
 
         payment = registration.payment
         expect(payment).to be_present
-        expect(payment.amount).to eq(45000)
+        expect(payment.amount).to eq(50000)
         expect(payment.payment_method).to eq("paypal")
         expect(payment.status).to eq("completed")
         expect(payment.user).to eq(user)
@@ -74,7 +74,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         json = response.parsed_body
 
         expect(json["status"]).to eq("error")
-        expect(json["message"]).to eq("시험을 찾을 수 없습니다.")
+        expect(json["message"]).to eq("시험을(를) 찾을 수 없습니다.")
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
       end
 
       it "payment_method가 없으면 에러를 반환합니다" do
-        params = { amount: 45000 }
+        params = { amount: 50000 }
         post "/api/v1/tests/#{test.id}/apply", params: params, headers: headers
 
         expect(response).to have_http_status(:bad_request)

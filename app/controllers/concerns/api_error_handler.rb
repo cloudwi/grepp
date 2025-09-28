@@ -10,7 +10,11 @@ module ApiErrorHandler
   private
 
   def handle_record_not_found(exception)
-    resource_name = exception.model.model_name.human.downcase
+    resource_name = if exception.model.is_a?(String)
+                     exception.model.constantize.model_name.human.downcase
+                   else
+                     exception.model.model_name.human.downcase
+                   end
     render json: error_response("#{resource_name}을(를) 찾을 수 없습니다."), status: :not_found
   end
 

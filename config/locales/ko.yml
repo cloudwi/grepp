@@ -1,5 +1,11 @@
 ko:
   activerecord:
+    models:
+      test: "시험"
+      course: "수업"
+      user: "사용자"
+      test_registration: "시험 신청"
+      course_registration: "수업 신청"
     errors:
       messages:
         record_invalid: "검증에 실패했습니다: %{errors}"

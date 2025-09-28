@@ -1,7 +1,8 @@
-class JwtMiddleware
-  def initialize(app)
-    @app = app
-  end
+module Middleware
+  class JwtMiddleware
+    def initialize(app)
+      @app = app
+    end
 
   def call(env)
     request = Rack::Request.new(env)
@@ -89,5 +90,6 @@ class JwtMiddleware
         errors: [ message ]
       }) ]
     ]
+  end
   end
 end
