@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -10,10 +10,11 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      resources :users, only: [:create]
-      resources :tests, only: [:index]
-      post 'login', to: 'auth#login'
-      get 'protected', to: 'test#protected_endpoint'
+      resources :users, only: [ :create ]
+      resources :tests, only: [ :index ]
+      resources :courses, only: [ :index ]
+      post "login", to: "auth#login"
+      get "protected", to: "test#protected_endpoint"
     end
   end
 

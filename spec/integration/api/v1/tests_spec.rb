@@ -4,9 +4,15 @@ RSpec.describe 'api/v1/tests', type: :request do
   path '/api/v1/tests' do
     get('시험 목록 조회') do
       tags 'Tests'
-      description '모든 시험 목록을 조회합니다.'
+      description '시험 목록을 조회합니다. 페이지네이션, 검색, 정렬, 필터링을 지원합니다.'
       produces 'application/json'
-      security [{ bearer_auth: [] }]
+      security [ { bearer_auth: [] } ]
+
+      parameter name: :page, in: :query, type: :integer, description: '페이지 번호 (기본값: 1)', required: false, example: 1
+      parameter name: :per_page, in: :query, type: :integer, description: '페이지당 항목 수 (기본값: 20, 최대: 100)', required: false, example: 20
+      parameter name: :search, in: :query, type: :string, description: '시험 제목으로 검색', required: false, example: '프로그래밍'
+      parameter name: :sort, in: :query, type: :string, description: '정렬 기준', required: false, enum: [ 'created', 'popular', 'start_date' ], example: 'created'
+      parameter name: :status, in: :query, type: :string, description: '상태별 필터링', required: false, enum: [ 'available', 'upcoming', 'past' ], example: 'available'
 
       response(200, '시험 목록 조회 성공') do
         before do
