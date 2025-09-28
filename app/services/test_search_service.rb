@@ -14,14 +14,10 @@ class TestSearchService
   attr_reader :params
 
   def build_tests_relation
-    Test.left_joins(:test_registrations)
-        .select(
-          "tests.*",
-          "COUNT(test_registrations.id) as enrollment_count"
-        )
-        .group("tests.id")
+    Test.all
         .then { |relation| apply_search_filter(relation) }
         .then { |relation| apply_status_filter(relation) }
+        .then { |relation| apply_price_filter(relation) }
         .then { |relation| apply_sorting(relation) }
   end
 
@@ -48,7 +44,7 @@ class TestSearchService
         end_date: test.end_date,
         price: test.price,
         status: calculate_test_status_optimized(test, current_time),
-        enrollment_count: test.attributes["enrollment_count"].to_i,
+        enrollment_count: test.registrations_count,
         created_at: test.created_at
       }
     end
@@ -57,21 +53,19 @@ class TestSearchService
   def apply_search_filter(relation)
     return relation if params[:search].blank?
 
-    search_term = "%#{params[:search]}%"
-    relation.where("tests.title LIKE ?", search_term)
+    relation.search_by_title(params[:search])
   end
 
   def apply_status_filter(relation)
     return relation if params[:status].blank?
 
-    current_time = Time.current
     case params[:status]
     when "available"
-      relation.where("tests.start_date <= ? AND tests.end_date >= ?", current_time, current_time)
+      relation.available
     when "upcoming"
-      relation.where("tests.start_date > ?", current_time)
+      relation.upcoming
     when "past"
-      relation.where(tests: { end_date: ...current_time })
+      relation.past
     else
       relation
     end
@@ -80,12 +74,18 @@ class TestSearchService
   def apply_sorting(relation)
     case params[:sort]
     when "popular"
-      relation.order(enrollment_count: :desc)
+      relation.popular
     when "start_date"
-      relation.order("tests.start_date ASC")
+      relation.by_start_date
     else
-      relation.order("tests.created_at DESC")
+      relation.recent
     end
+  end
+
+  def apply_price_filter(relation)
+    return relation unless params[:min_price].present? || params[:max_price].present?
+
+    relation.price_between(params[:min_price], params[:max_price])
   end
 
   def calculate_test_status_optimized(test, current_time)
