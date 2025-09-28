@@ -81,3 +81,80 @@ docker-compose exec web bundle exec rspec
 ```bash
 docker-compose exec web bundle exec rails rswag:specs:swaggerize
 ```
+
+## 네이티브 환경에서 실행 (Docker 없이)
+
+### 요구사항
+- Ruby 3.3.5
+- PostgreSQL 15
+- Bundler
+
+### 설정 방법
+
+1. **Ruby와 Bundler 설치**
+   ```bash
+   # rbenv 사용 예시
+   rbenv install 3.3.5
+   rbenv global 3.3.5
+   gem install bundler
+   ```
+
+2. **PostgreSQL 설치 및 설정**
+   ```bash
+   # macOS (Homebrew)
+   brew install postgresql@15
+   brew services start postgresql@15
+
+   # Ubuntu/Debian
+   sudo apt update
+   sudo apt install postgresql-15 postgresql-client-15
+   sudo systemctl start postgresql
+   ```
+
+3. **데이터베이스 사용자 생성**
+   ```sql
+   sudo -u postgres psql
+   CREATE USER grepp WITH PASSWORD 'password';
+   CREATE DATABASE grepp_development OWNER grepp;
+   CREATE DATABASE grepp_test OWNER grepp;
+   ALTER USER grepp CREATEDB;
+   \q
+   ```
+
+4. **의존성 설치**
+   ```bash
+   bundle install
+   ```
+
+5. **데이터베이스 설정**
+   ```bash
+   bundle exec rails db:create
+   bundle exec rails db:migrate
+   bundle exec rails db:seed
+   ```
+
+6. **서버 실행**
+   ```bash
+   bundle exec rails server
+   ```
+
+### CI/CD 환경 (GitHub Actions)
+
+이 프로젝트는 GitHub Actions를 통해 자동으로 린트와 테스트를 실행합니다:
+- **Lint**: RuboCop을 사용한 코드 스타일 검사
+- **Test**: RSpec을 사용한 자동화된 테스트
+
+CI 파이프라인은 다음 환경에서 테스트됩니다:
+- Ubuntu Latest
+- Ruby 3.3.5
+- PostgreSQL 15
+
+### 환경 변수
+
+| 변수명 | 기본값 | 설명 |
+|--------|--------|------|
+| `DB_HOST` | `localhost` | 데이터베이스 호스트 |
+| `DB_USER` | `grepp` | 데이터베이스 사용자명 |
+| `DB_PASSWORD` | `password` | 데이터베이스 비밀번호 |
+| `DB_NAME` | `grepp_test` | 테스트용 데이터베이스명 |
+| `RAILS_MAX_THREADS` | `5` | Rails 스레드 풀 크기 |

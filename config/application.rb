@@ -30,6 +30,10 @@ module Grepp
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    # I18n configuration
+    config.i18n.default_locale = :ko
+    config.i18n.available_locales = [:ko, :en]
+
     # Add JWT middleware
     config.middleware.use JwtMiddleware
   end
