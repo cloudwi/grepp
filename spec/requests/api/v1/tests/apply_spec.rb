@@ -18,7 +18,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         post "/api/v1/tests/#{test.id}/apply", params: valid_params, headers: headers
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
 
         expect(json["status"]).to eq("success")
         expect(json["message"]).to eq("시험 응시 신청이 완료되었습니다.")
@@ -45,7 +45,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         post "/api/v1/tests/#{test.id}/apply", params: params, headers: headers
 
         expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json["data"]["payment"]["payment_method"]).to eq("credit_card")
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         post "/api/v1/tests/#{test.id}/apply", params: valid_params, headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
 
         expect(json["status"]).to eq("error")
         expect(json["message"]).to eq("이미 신청한 시험입니다.")
@@ -71,7 +71,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         post "/api/v1/tests/999/apply", params: valid_params, headers: headers
 
         expect(response).to have_http_status(:not_found)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
 
         expect(json["status"]).to eq("error")
         expect(json["message"]).to eq("시험을 찾을 수 없습니다.")
@@ -83,7 +83,7 @@ RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
         post "/api/v1/tests/#{test.id}/apply", params: valid_params
 
         expect(response).to have_http_status(:unauthorized)
-        json = JSON.parse(response.body)
+        json = response.parsed_body
 
         expect(json["status"]).to eq("error")
         expect(json["message"]).to eq("인증이 필요합니다.")
