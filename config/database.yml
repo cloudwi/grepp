@@ -1,26 +1,10 @@
-# PostgreSQL configuration
-default: &default
+# PostgreSQL configuration for local development only
+development:
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
   database: grepp_development
   username: grepp
   password: password
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
   port: 5432
-
-test:
-  <<: *default
-  database: grepp_test
-  username: grepp
-  password: password
-  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
-  port: 5432
-
-production:
-  <<: *default
-  url: <%= ENV.fetch("DATABASE_URL") %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
