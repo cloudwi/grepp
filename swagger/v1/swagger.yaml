@@ -368,6 +368,106 @@ components:
       - status
       - message
       - data
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "test_1"
+        type:
+          type: string
+          enum:
+          - test
+          - course
+          example: test
+        title:
+          type: string
+          example: 프로그래밍 기초 시험
+        start_date:
+          type: string
+          format: date-time
+          example: '2024-01-15T09:00:00Z'
+        end_date:
+          type: string
+          format: date-time
+          example: '2024-01-15T12:00:00Z'
+        status:
+          type: string
+          enum:
+          - upcoming
+          - available
+          - past
+          example: available
+        enrolled:
+          type: boolean
+          example: false
+        enrollment_count:
+          type: integer
+          example: 25
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-01-10T10:00:00Z'
+      required:
+      - id
+      - type
+      - title
+      - start_date
+      - end_date
+      - status
+      - enrolled
+      - enrollment_count
+    CoursesListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: 코스 목록 조회가 완료되었습니다.
+        data:
+          type: object
+          properties:
+            courses:
+              type: array
+              items:
+                "$ref": "#/components/schemas/Course"
+            pagination:
+              type: object
+              properties:
+                current_page:
+                  type: integer
+                  example: 1
+                total_pages:
+                  type: integer
+                  example: 5
+                total_count:
+                  type: integer
+                  example: 95
+                per_page:
+                  type: integer
+                  example: 20
+                has_next_page:
+                  type: boolean
+                  example: true
+                has_prev_page:
+                  type: boolean
+                  example: false
+              required:
+              - current_page
+              - total_pages
+              - total_count
+              - per_page
+              - has_next_page
+              - has_prev_page
+          required:
+          - courses
+          - pagination
+      required:
+      - status
+      - message
+      - data
     ErrorResponse:
       type: object
       properties:
