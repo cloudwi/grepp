@@ -15,14 +15,10 @@ class CourseSearchService
   attr_reader :params, :current_user
 
   def build_courses_relation
-    Course.left_joins(:course_registrations)
-          .select(
-            "courses.*",
-            "COUNT(course_registrations.id) as enrollment_count"
-          )
-          .group("courses.id")
+    Course.all
           .then { |relation| apply_search_filter(relation) }
           .then { |relation| apply_status_filter(relation) }
+          .then { |relation| apply_price_filter(relation) }
           .then { |relation| apply_sorting(relation) }
   end
 
@@ -49,7 +45,7 @@ class CourseSearchService
         price: course.price,
         status: calculate_course_status(course),
         enrolled: current_user_enrolled_in_course?(course.id),
-        enrollment_count: course.attributes["enrollment_count"].to_i,
+        enrollment_count: course.registrations_count,
         created_at: course.created_at
       }
     end
@@ -58,21 +54,19 @@ class CourseSearchService
   def apply_search_filter(relation)
     return relation if params[:search].blank?
 
-    search_term = "%#{params[:search]}%"
-    relation.where("courses.title LIKE ?", search_term)
+    relation.search_by_title(params[:search])
   end
 
   def apply_status_filter(relation)
     return relation if params[:status].blank?
 
-    current_time = Time.current
     case params[:status]
     when "available"
-      relation.where("courses.enrollment_start_date <= ? AND courses.enrollment_end_date >= ?", current_time, current_time)
+      relation.available
     when "upcoming"
-      relation.where("courses.enrollment_start_date > ?", current_time)
+      relation.upcoming
     when "past"
-      relation.where(courses: { enrollment_end_date: ...current_time })
+      relation.past
     else
       relation
     end
@@ -81,12 +75,18 @@ class CourseSearchService
   def apply_sorting(relation)
     case params[:sort]
     when "popular"
-      relation.order(enrollment_count: :desc)
+      relation.popular
     when "start_date"
-      relation.order("courses.enrollment_start_date ASC")
+      relation.by_start_date
     else
-      relation.order("courses.created_at DESC")
+      relation.recent
     end
+  end
+
+  def apply_price_filter(relation)
+    return relation unless params[:min_price].present? || params[:max_price].present?
+
+    relation.price_between(params[:min_price], params[:max_price])
   end
 
   def calculate_course_status(course)
