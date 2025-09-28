@@ -1,8 +1,54 @@
-# Omakase Ruby styling for Rails
+# Omakase Ruby styling for Rails + Rails-specific rules
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+plugins:
+  - rubocop-rails
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.3
+  Exclude:
+    - 'db/schema.rb'
+    - 'db/migrate/*.rb'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+
+# Rails specific configurations
+Rails:
+  Enabled: true
+
+# Custom house style overrides
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 150
+
+Layout/LineLength:
+  Max: 120
+
+# Rails-specific rules
+Rails/FilePath:
+  Enabled: true
+
+Rails/InverseOf:
+  Enabled: true
+
+Rails/HasAndBelongsToMany:
+  Enabled: false  # Allow HABTM if needed
+
+Rails/SkipsModelValidations:
+  Enabled: true
+  Exclude:
+    - 'db/migrate/*.rb'
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false  # 인덱스가 존재하지만 RuboCop이 인식하지 못하는 경우 비활성화
