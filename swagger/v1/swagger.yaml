@@ -90,6 +90,64 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/tests/{id}/apply":
+    post:
+      summary: 시험 응시 신청
+      tags:
+      - Tests
+      description: 시험에 응시 신청하고 결제 정보를 저장합니다.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: id
+        in: path
+        description: 시험 ID
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 45000
+                  description: 결제 금액
+                payment_method:
+                  type: string
+                  example: kakaopay
+                  description: 결제 방법
+              required:
+              - amount
+              - payment_method
+      responses:
+        '201':
+          description: 응시 신청 성공
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TestApplicationResponse"
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '404':
+          description: 시험을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '422':
+          description: 중복 신청
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/tests":
     get:
       summary: 시험 목록 조회
@@ -417,6 +475,61 @@ components:
       - status
       - enrolled
       - enrollment_count
+    TestApplicationResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: 시험 응시 신청이 완료되었습니다.
+        data:
+          type: object
+          properties:
+            registration_id:
+              type: integer
+              example: 1
+            test_id:
+              type: integer
+              example: 1
+            test_title:
+              type: string
+              example: 프로그래밍 시험
+            payment:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                amount:
+                  type: integer
+                  example: 45000
+                payment_method:
+                  type: string
+                  example: paypal
+                status:
+                  type: string
+                  example: completed
+                payment_time:
+                  type: string
+                  format: date-time
+                  example: '2024-01-10T10:00:00Z'
+              required:
+              - id
+              - amount
+              - payment_method
+              - status
+              - payment_time
+          required:
+          - registration_id
+          - test_id
+          - test_title
+          - payment
+      required:
+      - status
+      - message
+      - data
     CoursesListResponse:
       type: object
       properties:
