@@ -12,11 +12,7 @@ class Api::V1::CoursesController < Api::V1::BaseController
     result = service.call
     render json: success_response("수업 수강 신청이 완료되었습니다.", result), status: :created
   rescue CourseEnrollmentService::EnrollmentError => e
-    render json: error_response(e.message), status: :unprocessable_entity
-  rescue ActiveRecord::RecordInvalid => e
-    render json: error_response("신청 처리 중 오류가 발생했습니다.", e.record.errors.full_messages), status: :unprocessable_entity
-  rescue ActiveRecord::RecordNotFound
-    render json: error_response("수업을 찾을 수 없습니다."), status: :not_found
+    handle_service_error(e)
   end
 
   def complete
@@ -24,7 +20,7 @@ class Api::V1::CoursesController < Api::V1::BaseController
     registration = current_user.course_registrations.find_by!(course: course)
 
     if registration.completed?
-      render json: error_response("이미 완료된 수업입니다."), status: :unprocessable_entity
+      handle_service_error(StandardError.new("이미 완료된 수업입니다."))
       return
     end
 
@@ -38,8 +34,6 @@ class Api::V1::CoursesController < Api::V1::BaseController
     }
 
     render json: success_response("수업 수강이 완료되었습니다.", result), status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: error_response("수업 신청 내역을 찾을 수 없습니다."), status: :not_found
   end
 
   private
