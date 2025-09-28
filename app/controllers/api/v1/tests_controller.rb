@@ -53,6 +53,7 @@ class Api::V1::TestsController < Api::V1::BaseController
         title: test.title,
         start_date: test.start_date,
         end_date: test.end_date,
+        price: test.price,
         status: calculate_test_status_optimized(test, current_time),
         enrollment_count: test.attributes["enrollment_count"].to_i,
         created_at: test.created_at
