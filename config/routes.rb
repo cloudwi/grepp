@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [ :create ]
-      resources :tests, only: [ :index ]
+      resources :tests, only: [ :index ] do
+        member do
+          post "apply"
+        end
+      end
       resources :courses, only: [ :index ]
       post "login", to: "auth#login"
       get "protected", to: "test#protected_endpoint"

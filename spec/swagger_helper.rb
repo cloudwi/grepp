@@ -146,6 +146,34 @@ RSpec.configure do |config|
             },
             required: [ 'id', 'type', 'title', 'start_date', 'end_date', 'status', 'enrolled', 'enrollment_count' ]
           },
+          TestApplicationResponse: {
+            type: 'object',
+            properties: {
+              status: { type: 'string', example: 'success' },
+              message: { type: 'string', example: '시험 응시 신청이 완료되었습니다.' },
+              data: {
+                type: 'object',
+                properties: {
+                  registration_id: { type: 'integer', example: 1 },
+                  test_id: { type: 'integer', example: 1 },
+                  test_title: { type: 'string', example: '프로그래밍 시험' },
+                  payment: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer', example: 1 },
+                      amount: { type: 'integer', example: 45000 },
+                      payment_method: { type: 'string', example: 'paypal' },
+                      status: { type: 'string', example: 'completed' },
+                      payment_time: { type: 'string', format: 'date-time', example: '2024-01-10T10:00:00Z' }
+                    },
+                    required: [ 'id', 'amount', 'payment_method', 'status', 'payment_time' ]
+                  }
+                },
+                required: [ 'registration_id', 'test_id', 'test_title', 'payment' ]
+              }
+            },
+            required: [ 'status', 'message', 'data' ]
+          },
           CoursesListResponse: {
             type: 'object',
             properties: {

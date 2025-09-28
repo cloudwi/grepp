@@ -1,7 +1,50 @@
 class Api::V1::TestsController < ApplicationController
+  before_action :authenticate_user!, only: [:apply]
   def index
     tests = build_tests_query
     render json: success_response("시험 목록 조회가 완료되었습니다.", tests)
+  end
+
+  def apply
+    test = Test.find(params[:id])
+
+    existing_registration = current_user.test_registrations.find_by(test: test)
+    if existing_registration
+      return render json: error_response("이미 신청한 시험입니다."), status: :unprocessable_entity
+    end
+
+    ActiveRecord::Base.transaction do
+      test_registration = current_user.test_registrations.create!(test: test)
+
+      payment = Payment.create!(
+        user: current_user,
+        payable: test_registration,
+        amount: application_params[:amount],
+        payment_method: normalized_payment_method,
+        status: "completed",
+        payment_time: Time.current
+      )
+
+      render json: success_response(
+        "시험 응시 신청이 완료되었습니다.",
+        {
+          registration_id: test_registration.id,
+          test_id: test.id,
+          test_title: test.title,
+          payment: {
+            id: payment.id,
+            amount: payment.amount,
+            payment_method: payment.payment_method,
+            status: payment.status,
+            payment_time: payment.payment_time
+          }
+        }
+      ), status: :created
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    render json: error_response("신청 처리 중 오류가 발생했습니다.", e.record.errors.full_messages), status: :unprocessable_entity
+  rescue ActiveRecord::RecordNotFound
+    render json: error_response("시험을 찾을 수 없습니다."), status: :not_found
   end
 
   private
@@ -107,6 +150,34 @@ class Api::V1::TestsController < ApplicationController
     else
       "past"
     end
+  end
+
+  def application_params
+    params.permit(:amount, :payment_method).tap do |p|
+      p.require(:amount)
+      p.require(:payment_method)
+    end
+  end
+
+  def normalized_payment_method
+    case application_params[:payment_method].downcase
+    when "kakaopay", "kakao"
+      "paypal"
+    when "card", "credit"
+      "credit_card"
+    when "bank"
+      "bank_transfer"
+    else
+      "paypal"
+    end
+  end
+
+  def error_response(message, errors = [])
+    {
+      status: "error",
+      message: message,
+      errors: Array(errors)
+    }
   end
 
   def success_response(message, data = {})

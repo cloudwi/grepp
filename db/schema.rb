@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_020642) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_28_055822) do
   create_table "course_registrations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "course_id", null: false
@@ -31,6 +31,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_020642) do
     t.index ["enrollment_start_date", "enrollment_end_date"], name: "index_courses_on_enrollment_start_date_and_enrollment_end_date"
     t.index ["enrollment_start_date"], name: "index_courses_on_enrollment_start_date"
     t.index ["title"], name: "index_courses_on_title"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.integer "amount"
+    t.string "payment_method"
+    t.string "status"
+    t.datetime "payment_time"
+    t.datetime "cancelled_at"
+    t.integer "user_id", null: false
+    t.string "payable_type", null: false
+    t.integer "payable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payable_type", "payable_id"], name: "index_payments_on_payable"
+    t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
   create_table "test_registrations", force: :cascade do |t|
@@ -65,6 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_020642) do
 
   add_foreign_key "course_registrations", "courses"
   add_foreign_key "course_registrations", "users"
+  add_foreign_key "payments", "users"
   add_foreign_key "test_registrations", "tests"
   add_foreign_key "test_registrations", "users"
 end
