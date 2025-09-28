@@ -13,7 +13,10 @@ gem "puma", ">= 5.0"
 gem "bcrypt", "~> 3.1.7"
 
 # JWT for authentication
-gem 'jwt'
+gem "jwt"
+
+# Pagination
+gem "kaminari"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -45,17 +48,23 @@ group :development, :test do
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
+  # Ruby style guide enforcement
+  gem "rubocop", require: false
+  gem "rubocop-rails", require: false
+
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
   # Testing framework
-  gem 'rspec-rails'
+  gem "rspec-rails"
 
   # API documentation with Swagger
-  gem 'rswag-specs'
+  gem "rswag-specs"
 end
 
 group :development do
-  gem 'rswag-ui'
-  gem 'rswag-api'
+  gem "rswag-ui"
+  gem "rswag-api"
 end
+
+gem "rack-cors", "~> 3.0"

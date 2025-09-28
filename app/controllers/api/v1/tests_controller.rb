@@ -1,27 +1,18 @@
 class Api::V1::TestsController < ApplicationController
-  before_action :authenticate_user!, only: [:show]
-
   def index
     tests = build_tests_query
-    render json: success_response("시험 목록 조회가 완료되었습니다.", { tests: tests })
+    render json: success_response("시험 목록 조회가 완료되었습니다.", tests)
   end
 
   private
 
   def build_tests_query
-    # 🔍 Rails Console Debug Hint:
-    # tests_relation = build_tests_relation
-    # puts tests_relation.to_sql  # 실제 실행될 SQL 확인
-    # puts tests_relation.explain # 실행 계획 확인
-
     tests_relation = build_tests_relation
-    # ⚡ SQL 실행 시점: 아래 .map이 호출될 때 실제 SQL이 실행됩니다
-    serialize_tests(tests_relation)
+    paginated_tests = apply_pagination(tests_relation)
+    serialize_with_pagination(paginated_tests)
   end
 
   def build_tests_relation
-    # 🚀 Relation 구성 단계 (아직 SQL 실행되지 않음)
-    # N+1 방지: LEFT JOIN으로 enrollment_count를 미리 계산
     Test.left_joins(:test_registrations)
         .select(
           "tests.*",
@@ -33,8 +24,14 @@ class Api::V1::TestsController < ApplicationController
         .then { |relation| apply_sorting(relation) }
   end
 
+  def serialize_with_pagination(paginated_tests)
+    {
+      tests: serialize_tests(paginated_tests),
+      pagination: build_pagination_meta(paginated_tests)
+    }
+  end
+
   def serialize_tests(tests_relation)
-    # ⚡ SQL 실행 시점: .map이 레코드를 순회하면서 SQL이 실행됩니다
     tests_relation.map do |test|
       {
         id: test.id,
@@ -48,15 +45,33 @@ class Api::V1::TestsController < ApplicationController
     end
   end
 
+  def apply_pagination(relation)
+    page = [ params[:page].to_i, 1 ].max
+    per_page = [ (params[:per_page] || 20).to_i, 100 ].min
+
+    relation.page(page).per(per_page)
+  end
+
+  def build_pagination_meta(paginated_relation)
+    {
+      current_page: paginated_relation.current_page,
+      total_pages: paginated_relation.total_pages,
+      total_count: paginated_relation.total_count,
+      per_page: paginated_relation.limit_value,
+      has_next_page: !paginated_relation.last_page?,
+      has_prev_page: !paginated_relation.first_page?
+    }
+  end
+
   def apply_search_filter(relation)
-    return relation unless params[:search].present?
+    return relation if params[:search].blank?
 
     search_term = "%#{params[:search]}%"
     relation.where("tests.title LIKE ?", search_term)
   end
 
   def apply_status_filter(relation)
-    return relation unless params[:status].present?
+    return relation if params[:status].blank?
 
     current_time = Time.current
     case params[:status]
@@ -65,7 +80,7 @@ class Api::V1::TestsController < ApplicationController
     when "upcoming"
       relation.where("tests.start_date > ?", current_time)
     when "past"
-      relation.where("tests.end_date < ?", current_time)
+      relation.where(tests: { end_date: ...current_time })
     else
       relation
     end
@@ -74,10 +89,10 @@ class Api::V1::TestsController < ApplicationController
   def apply_sorting(relation)
     case params[:sort]
     when "popular"
-      relation.order("enrollment_count DESC")
+      relation.order(enrollment_count: :desc)
     when "start_date"
       relation.order("tests.start_date ASC")
-    else # 'created' or default
+    else
       relation.order("tests.created_at DESC")
     end
   end
