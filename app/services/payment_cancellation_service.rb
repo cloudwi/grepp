@@ -16,7 +16,7 @@ class PaymentCancellationService
   attr_reader :payment
 
   def validate_cancellation!
-    unless %w[completed].include?(payment.status)
+    unless %w[ completed ].include?(payment.status)
       raise CancellationError, "완료된 결제만 취소할 수 있습니다."
     end
 

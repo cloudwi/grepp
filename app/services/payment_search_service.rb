@@ -59,15 +59,15 @@ class PaymentSearchService
     when "paid"
       relation.completed
     when "cancelled"
-      relation.where(status: ["cancelled", "refunded"])
+      relation.where(status: [ "cancelled", "refunded" ])
     else
       relation
     end
   end
 
   def apply_date_filter(relation)
-    relation = relation.where("payment_time >= ?", Date.parse(params[:from])) if params[:from].present?
-    relation = relation.where("payment_time <= ?", Date.parse(params[:to]).end_of_day) if params[:to].present?
+    relation = relation.where(payment_time: Date.parse(params[:from])..) if params[:from].present?
+    relation = relation.where(payment_time: ..Date.parse(params[:to]).end_of_day) if params[:to].present?
     relation
   end
 
