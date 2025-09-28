@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_080100) do
     t.index ["payable_type", "payable_id"], name: "index_payments_on_payable"
     t.index ["payment_time"], name: "idx_payments_payment_time"
     t.index ["status"], name: "idx_payments_status"
-    t.index ["user_id", "created_at"], name: "idx_payments_active", where: "((status)::text = ANY ((ARRAY['completed'::character varying, 'pending'::character varying])::text[]))"
+    t.index ["user_id", "created_at"], name: "idx_payments_active", where: "((status)::text = ANY (ARRAY[('completed'::character varying)::text, ('pending'::character varying)::text]))"
     t.index ["user_id", "payment_time"], name: "idx_payments_user_time"
     t.index ["user_id", "status"], name: "idx_payments_user_status"
     t.index ["user_id"], name: "index_payments_on_user_id"

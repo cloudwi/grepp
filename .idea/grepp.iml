@@ -96,6 +96,7 @@
     <orderEntry type="library" scope="PROVIDED" name="ostruct (v0.6.3, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="parallel (v1.27.0, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="parser (v3.3.9.0, rbenv: 3.3.5) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="pg (v1.6.2, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="pp (v0.6.2, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="prettyprint (v0.2.0, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="prism (v1.5.1, rbenv: 3.3.5) [gem]" level="application" />
@@ -136,7 +137,6 @@
     <orderEntry type="library" scope="PROVIDED" name="solid_cable (v3.0.12, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="solid_cache (v1.0.7, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="solid_queue (v1.2.1, rbenv: 3.3.5) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="sqlite3 (v2.7.4, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sshkit (v1.24.0, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="stringio (v3.1.7, rbenv: 3.3.5) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="thor (v1.4.0, rbenv: 3.3.5) [gem]" level="application" />
@@ -248,6 +248,7 @@
       <value>file://$MODULE_DIR$/public/stylesheets</value>
     </entry>
     <entry key="test/mailers/previews">
+      <value>file://$MODULE_DIR$/spec/mailers/previews</value>
       <value>file://$MODULE_DIR$/test/mailers/previews</value>
       <value>file://$MODULE_DIR$/test/mailers/previews</value>
     </entry>
