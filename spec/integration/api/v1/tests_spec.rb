@@ -21,9 +21,9 @@ RSpec.describe 'api/v1/tests', type: :request do
           token = user.generate_jwt_token
 
           # Create some test data
-          Test.create!(title: '프로그래밍 기초 시험', start_date: 1.day.ago, end_date: 1.day.from_now)
-          Test.create!(title: '알고리즘 시험', start_date: 1.day.from_now, end_date: 3.days.from_now)
-          Test.create!(title: '완료된 시험', start_date: 3.days.ago, end_date: 2.days.ago)
+          Test.create!(title: '프로그래밍 기초 시험', start_date: 1.day.ago, end_date: 1.day.from_now, price: 45000)
+          Test.create!(title: '알고리즘 시험', start_date: 1.day.from_now, end_date: 3.days.from_now, price: 55000)
+          Test.create!(title: '완료된 시험', start_date: 3.days.ago, end_date: 2.days.ago, price: 40000)
 
           header 'Authorization', "Bearer #{token}"
         end
