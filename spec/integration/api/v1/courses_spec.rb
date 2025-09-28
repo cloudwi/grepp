@@ -22,9 +22,9 @@ RSpec.describe 'api/v1/courses', type: :request do
             token = @user.generate_jwt_token
 
             # Create test data
-            @course1 = Course.create!(title: '웹 개발 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now)
-            @course2 = Course.create!(title: 'AI 기초 수업', enrollment_start_date: 1.day.from_now, enrollment_end_date: 3.days.from_now)
-            @course3 = Course.create!(title: '데이터베이스 수업', enrollment_start_date: 2.days.ago, enrollment_end_date: 2.days.from_now)
+            @course1 = Course.create!(title: '웹 개발 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now, price: 100000)
+            @course2 = Course.create!(title: 'AI 기초 수업', enrollment_start_date: 1.day.from_now, enrollment_end_date: 3.days.from_now, price: 150000)
+            @course3 = Course.create!(title: '데이터베이스 수업', enrollment_start_date: 2.days.ago, enrollment_end_date: 2.days.from_now, price: 120000)
 
             # Create some registrations for popularity testing
             CourseRegistration.create!(user: @user, course: @course1)
@@ -67,13 +67,13 @@ RSpec.describe 'api/v1/courses', type: :request do
             token = @user.generate_jwt_token
 
             # Available course
-            Course.create!(title: '현재 진행 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now)
+            Course.create!(title: '현재 진행 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now, price: 100000)
 
             # Past course
-            Course.create!(title: '완료된 수업', enrollment_start_date: 3.days.ago, enrollment_end_date: 2.days.ago)
+            Course.create!(title: '완료된 수업', enrollment_start_date: 3.days.ago, enrollment_end_date: 2.days.ago, price: 80000)
 
             # Upcoming course
-            Course.create!(title: '예정된 수업', enrollment_start_date: 1.day.from_now, enrollment_end_date: 3.days.from_now)
+            Course.create!(title: '예정된 수업', enrollment_start_date: 1.day.from_now, enrollment_end_date: 3.days.from_now, price: 120000)
 
             header 'Authorization', "Bearer #{token}"
           end
@@ -96,8 +96,8 @@ RSpec.describe 'api/v1/courses', type: :request do
             @user3 = User.create!(email: 'test3@example.com', password: 'password123')
             token = @user.generate_jwt_token
 
-            @course1 = Course.create!(title: '인기 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now)
-            @course2 = Course.create!(title: '일반 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now)
+            @course1 = Course.create!(title: '인기 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now, price: 200000)
+            @course2 = Course.create!(title: '일반 수업', enrollment_start_date: 1.day.ago, enrollment_end_date: 1.day.from_now, price: 150000)
 
             # Create more registrations for course1
             CourseRegistration.create!(user: @user, course: @course1)
@@ -168,7 +168,8 @@ RSpec.describe 'api/v1/courses', type: :request do
           @course = Course.create!(
             title: '프로그래밍 기초 수업',
             enrollment_start_date: 1.day.ago,
-            enrollment_end_date: 1.day.from_now
+            enrollment_end_date: 1.day.from_now,
+            price: 180000
           )
 
           header 'Authorization', "Bearer #{@token}"
@@ -227,7 +228,8 @@ RSpec.describe 'api/v1/courses', type: :request do
           @course = Course.create!(
             title: '중복 신청 테스트 수업',
             enrollment_start_date: 1.day.ago,
-            enrollment_end_date: 1.day.from_now
+            enrollment_end_date: 1.day.from_now,
+            price: 160000
           )
 
           @user.course_registrations.create!(course: @course)
