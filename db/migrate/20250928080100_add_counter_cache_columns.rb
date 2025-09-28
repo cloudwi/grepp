@@ -1,8 +1,8 @@
 class AddCounterCacheColumns < ActiveRecord::Migration[8.0]
   def up
     # Counter cache 컬럼 추가
-    add_column :tests, :registrations_count, :integer, default: 0, null: false
-    add_column :courses, :registrations_count, :integer, default: 0, null: false
+    add_column :tests, :registrations_count, :integer, default: 0, null: false unless column_exists?(:tests, :registrations_count)
+    add_column :courses, :registrations_count, :integer, default: 0, null: false unless column_exists?(:courses, :registrations_count)
 
     # Counter cache 초기값 설정
     execute <<-SQL.squish
