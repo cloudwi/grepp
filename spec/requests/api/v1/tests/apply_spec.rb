@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "POST /api/v1/tests/:id/apply", type: :request do
   let(:user) { User.create!(email: "test@example.com", password: "password123") }
-  let(:test) { Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now) }
+  let(:test) { Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now, price: 50000) }
   let(:token) { user.generate_jwt_token }
   let(:headers) { { "Authorization" => "Bearer #{token}" } }
   let(:valid_params) do
