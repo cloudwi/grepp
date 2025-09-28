@@ -14,13 +14,21 @@ Rails.application.routes.draw do
       resources :tests, only: [ :index ] do
         member do
           post "apply"
+          post "complete"
         end
       end
       resources :courses, only: [ :index ] do
         member do
           post "enroll"
+          post "complete"
         end
       end
+      resources :payments, only: [ :index ] do
+        member do
+          post "cancel"
+        end
+      end
+      get "me/payments", to: "payments#index"
       post "login", to: "auth#login"
       get "protected", to: "test#protected_endpoint"
     end

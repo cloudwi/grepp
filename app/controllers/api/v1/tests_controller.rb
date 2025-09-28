@@ -1,6 +1,7 @@
 class Api::V1::TestsController < Api::V1::BaseController
   def index
-    tests = build_tests_query
+    service = TestSearchService.new(params)
+    tests = service.call
     render json: success_response("시험 목록 조회가 완료되었습니다.", tests)
   end
 
@@ -18,93 +19,30 @@ class Api::V1::TestsController < Api::V1::BaseController
     render json: error_response("시험을 찾을 수 없습니다."), status: :not_found
   end
 
-  private
+  def complete
+    test = Test.find(params[:id])
+    registration = current_user.test_registrations.find_by!(test: test)
 
-  def build_tests_query
-    tests_relation = build_tests_relation
-    paginated_tests = apply_pagination(tests_relation)
-    serialize_with_pagination(paginated_tests)
-  end
+    if registration.completed?
+      render json: error_response("이미 완료된 시험입니다."), status: :unprocessable_entity
+      return
+    end
 
-  def build_tests_relation
-    Test.left_joins(:test_registrations)
-        .select(
-          "tests.*",
-          "COUNT(test_registrations.id) as enrollment_count"
-        )
-        .group("tests.id")
-        .then { |relation| apply_search_filter(relation) }
-        .then { |relation| apply_status_filter(relation) }
-        .then { |relation| apply_sorting(relation) }
-  end
+    registration.complete!
 
-  def serialize_with_pagination(paginated_tests)
-    {
-      tests: serialize_tests(paginated_tests),
-      pagination: build_pagination_meta(paginated_tests)
+    result = {
+      registration_id: registration.id,
+      test_id: test.id,
+      test_title: test.title,
+      completed_at: registration.completed_at
     }
+
+    render json: success_response("시험 응시가 완료되었습니다.", result), status: :ok
+  rescue ActiveRecord::RecordNotFound
+    render json: error_response("시험 신청 내역을 찾을 수 없습니다."), status: :not_found
   end
 
-  def serialize_tests(tests_relation)
-    current_time = Time.current
-    tests_relation.map do |test|
-      {
-        id: test.id,
-        title: test.title,
-        start_date: test.start_date,
-        end_date: test.end_date,
-        price: test.price,
-        status: calculate_test_status_optimized(test, current_time),
-        enrollment_count: test.attributes["enrollment_count"].to_i,
-        created_at: test.created_at
-      }
-    end
-  end
-
-
-  def apply_search_filter(relation)
-    return relation if params[:search].blank?
-
-    search_term = "%#{params[:search]}%"
-    relation.where("tests.title LIKE ?", search_term)
-  end
-
-  def apply_status_filter(relation)
-    return relation if params[:status].blank?
-
-    current_time = Time.current
-    case params[:status]
-    when "available"
-      relation.where("tests.start_date <= ? AND tests.end_date >= ?", current_time, current_time)
-    when "upcoming"
-      relation.where("tests.start_date > ?", current_time)
-    when "past"
-      relation.where(tests: { end_date: ...current_time })
-    else
-      relation
-    end
-  end
-
-  def apply_sorting(relation)
-    case params[:sort]
-    when "popular"
-      relation.order(enrollment_count: :desc)
-    when "start_date"
-      relation.order("tests.start_date ASC")
-    else
-      relation.order("tests.created_at DESC")
-    end
-  end
-
-  def calculate_test_status_optimized(test, current_time)
-    if current_time < test.start_date
-      "upcoming"
-    elsif current_time >= test.start_date && current_time <= test.end_date
-      "available"
-    else
-      "past"
-    end
-  end
+  private
 
   def application_params
     params.permit(:amount, :payment_method).tap do |p|
