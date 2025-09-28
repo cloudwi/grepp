@@ -29,38 +29,45 @@ Rails.logger.debug "📝 시험 생성 중..."
 Test.find_or_create_by!(title: '프로그래밍 기초 시험') do |test|
   test.start_date = 2.days.ago
   test.end_date = 5.days.from_now
+  test.price = 35000
 end
 
 Test.find_or_create_by!(title: '알고리즘 실전 시험') do |test|
   test.start_date = 1.day.ago
   test.end_date = 3.days.from_now
+  test.price = 45000
 end
 
 Test.find_or_create_by!(title: '데이터베이스 설계 시험') do |test|
   test.start_date = 1.hour.ago
   test.end_date = 7.days.from_now
+  test.price = 50000
 end
 
 # 예정된 시험들
 Test.find_or_create_by!(title: 'React 개발 시험') do |test|
   test.start_date = 3.days.from_now
   test.end_date = 10.days.from_now
+  test.price = 40000
 end
 
 Test.find_or_create_by!(title: 'Node.js 백엔드 시험') do |test|
   test.start_date = 5.days.from_now
   test.end_date = 12.days.from_now
+  test.price = 45000
 end
 
 # 완료된 시험들
 Test.find_or_create_by!(title: 'HTML/CSS 기초 시험') do |test|
   test.start_date = 10.days.ago
   test.end_date = 5.days.ago
+  test.price = 25000
 end
 
 Test.find_or_create_by!(title: 'JavaScript 기초 시험') do |test|
   test.start_date = 15.days.ago
   test.end_date = 8.days.ago
+  test.price = 30000
 end
 
 # 수업 데이터 생성
@@ -70,38 +77,45 @@ Rails.logger.debug "🎓 수업 생성 중..."
 Course.find_or_create_by!(title: '풀스택 웹 개발 부트캠프') do |course|
   course.enrollment_start_date = 3.days.ago
   course.enrollment_end_date = 7.days.from_now
+  course.price = 299000
 end
 
 Course.find_or_create_by!(title: 'AI/ML 기초 과정') do |course|
   course.enrollment_start_date = 1.day.ago
   course.enrollment_end_date = 10.days.from_now
+  course.price = 399000
 end
 
 Course.find_or_create_by!(title: '데이터 사이언스 실무') do |course|
   course.enrollment_start_date = 2.hours.ago
   course.enrollment_end_date = 5.days.from_now
+  course.price = 599000
 end
 
 # 예정된 수업들
 Course.find_or_create_by!(title: '클라우드 아키텍처 설계') do |course|
   course.enrollment_start_date = 2.days.from_now
   course.enrollment_end_date = 14.days.from_now
+  course.price = 499000
 end
 
 Course.find_or_create_by!(title: '모바일 앱 개발 (Flutter)') do |course|
   course.enrollment_start_date = 4.days.from_now
   course.enrollment_end_date = 18.days.from_now
+  course.price = 449000
 end
 
 # 완료된 수업들
 Course.find_or_create_by!(title: 'Git 버전 관리') do |course|
   course.enrollment_start_date = 20.days.ago
   course.enrollment_end_date = 10.days.ago
+  course.price = 149000
 end
 
 Course.find_or_create_by!(title: 'Linux 시스템 관리') do |course|
   course.enrollment_start_date = 25.days.ago
   course.enrollment_end_date = 15.days.ago
+  course.price = 199000
 end
 
 # 등록 데이터 생성 (인기도를 위해)

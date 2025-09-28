@@ -16,7 +16,11 @@ Rails.application.routes.draw do
           post "apply"
         end
       end
-      resources :courses, only: [ :index ]
+      resources :courses, only: [ :index ] do
+        member do
+          post "enroll"
+        end
+      end
       post "login", to: "auth#login"
       get "protected", to: "test#protected_endpoint"
     end

@@ -21,6 +21,10 @@ class TestApplicationService
     if user.test_registrations.exists?(test: test)
       raise ApplicationError, "이미 신청한 시험입니다."
     end
+
+    if application_params[:amount].to_d != test.price
+      raise ApplicationError, "결제 금액이 시험 가격과 일치하지 않습니다."
+    end
   end
 
   def create_registration_and_payment
@@ -29,7 +33,7 @@ class TestApplicationService
     payment = Payment.create!(
       user: user,
       payable: test_registration,
-      amount: application_params[:amount],
+      amount: test.price,
       payment_method: normalized_payment_method,
       status: "completed",
       payment_time: Time.current

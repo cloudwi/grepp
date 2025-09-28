@@ -62,7 +62,7 @@ paths:
           type: string
       - name: status
         in: query
-        description: "상태별 필터링:\n * `available` - 현재 등록 가능\n * `upcoming` - 등록 예정\n * `past` - 등록 종료\n "
+        description: "상태별 필터링:\n * `available` \n * `upcoming` \n * `past` \n "
         required: false
         enum:
         - available
@@ -93,6 +93,101 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/ErrorResponse"
+  "/api/v1/courses/{id}/enroll":
+    parameters:
+    - name: id
+      in: path
+      description: 수업 ID
+      required: true
+      schema:
+        type: string
+    post:
+      summary: 수업 수강 신청
+      tags:
+      - Courses
+      description: 수업 수강 신청을 처리하고 결제 정보를 저장합니다.
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: 수업 수강 신청 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: 수업 수강 신청이 완료되었습니다.
+                  data:
+                    type: object
+                    properties:
+                      registration_id:
+                        type: integer
+                        example: 1
+                      course_id:
+                        type: integer
+                        example: 1
+                      course_title:
+                        type: string
+                        example: 프로그래밍 기초 수업
+                      payment:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          amount:
+                            type: integer
+                            example: 45000
+                          payment_method:
+                            type: string
+                            example: paypal
+                          status:
+                            type: string
+                            example: completed
+                          payment_time:
+                            type: string
+                            example: '2024-09-26T12:00:00Z'
+        '422':
+          description: 중복 신청 에러
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '404':
+          description: 수업을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  description: 결제 금액
+                  example: 45000
+                payment_method:
+                  type: string
+                  description: 결제 방법 (kakaopay, card, bank 등)
+                  example: kakaopay
+              required:
+              - amount
+              - payment_method
   "/api/v1/tests/{id}/apply":
     post:
       summary: 시험 응시 신청
@@ -108,8 +203,32 @@ paths:
         required: true
         schema:
           type: integer
+      responses:
+        '201':
+          description: 응시 신청 성공
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TestApplicationResponse"
+        '422':
+          description: 중복 신청
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '404':
+          description: 시험을 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -126,31 +245,6 @@ paths:
               required:
               - amount
               - payment_method
-      responses:
-        '201':
-          description: 응시 신청 성공
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/TestApplicationResponse"
-        '401':
-          description: 인증 실패
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
-        '404':
-          description: 시험을 찾을 수 없음
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
-        '422':
-          description: 중복 신청
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/tests":
     get:
       summary: 시험 목록 조회

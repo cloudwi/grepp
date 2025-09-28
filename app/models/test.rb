@@ -2,6 +2,7 @@ class Test < ApplicationRecord
   validates :title, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
+  validates :price, presence: true, numericality: { greater_than: 0 }
 
   validate :end_date_after_start_date
 

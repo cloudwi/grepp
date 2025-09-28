@@ -2,6 +2,7 @@ class Course < ApplicationRecord
   validates :title, presence: true
   validates :enrollment_start_date, presence: true
   validates :enrollment_end_date, presence: true
+  validates :price, presence: true, numericality: { greater_than: 0 }
 
   validate :enrollment_end_date_after_start_date
 

@@ -10,8 +10,7 @@ RSpec.describe "api/v1/tests", type: :request do
       security [ { bearer_auth: [] } ]
 
       parameter name: :id, in: :path, type: :integer, description: "시험 ID", required: true
-
-      request_body_json schema: {
+      parameter name: :application_request, in: :body, schema: {
         type: :object,
         properties: {
           amount: { type: :integer, example: 45000, description: "결제 금액" },
@@ -29,6 +28,7 @@ RSpec.describe "api/v1/tests", type: :request do
         end
 
         let(:id) { @test.id }
+        let(:application_request) { { amount: 45000, payment_method: "kakaopay" } }
 
         schema "$ref" => "#/components/schemas/TestApplicationResponse"
 
@@ -51,6 +51,7 @@ RSpec.describe "api/v1/tests", type: :request do
         end
 
         let(:id) { @test.id }
+        let(:application_request) { { amount: 45000, payment_method: "kakaopay" } }
 
         schema "$ref" => "#/components/schemas/ErrorResponse"
 
@@ -69,6 +70,7 @@ RSpec.describe "api/v1/tests", type: :request do
         end
 
         let(:id) { 999 }
+        let(:application_request) { { amount: 45000, payment_method: "kakaopay" } }
 
         schema "$ref" => "#/components/schemas/ErrorResponse"
 
@@ -81,6 +83,7 @@ RSpec.describe "api/v1/tests", type: :request do
 
       response(401, "인증 실패") do
         let(:id) { 1 }
+        let(:application_request) { { amount: 45000, payment_method: "kakaopay" } }
 
         schema "$ref" => "#/components/schemas/ErrorResponse"
 

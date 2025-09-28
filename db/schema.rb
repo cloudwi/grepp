@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_28_055822) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_28_063209) do
   create_table "course_registrations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "course_id", null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_055822) do
     t.datetime "enrollment_end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
     t.index ["created_at"], name: "index_courses_on_created_at"
     t.index ["enrollment_end_date"], name: "index_courses_on_enrollment_end_date"
     t.index ["enrollment_start_date", "enrollment_end_date"], name: "index_courses_on_enrollment_start_date_and_enrollment_end_date"
@@ -63,6 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_28_055822) do
     t.datetime "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "price", precision: 10, scale: 2, null: false
     t.index ["created_at"], name: "index_tests_on_created_at"
     t.index ["end_date"], name: "index_tests_on_end_date"
     t.index ["start_date", "end_date"], name: "index_tests_on_start_date_and_end_date"
