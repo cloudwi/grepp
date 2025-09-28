@@ -134,17 +134,16 @@ RSpec.configure do |config|
           Course: {
             type: 'object',
             properties: {
-              id: { type: 'string', example: 'test_1' },
-              type: { type: 'string', enum: [ 'test', 'course' ], example: 'test' },
-              title: { type: 'string', example: '프로그래밍 기초 시험' },
-              start_date: { type: 'string', format: 'date-time', example: '2024-01-15T09:00:00Z' },
-              end_date: { type: 'string', format: 'date-time', example: '2024-01-15T12:00:00Z' },
+              id: { type: 'integer', example: 1 },
+              title: { type: 'string', example: '웹 개발 기초 수업' },
+              enrollment_start_date: { type: 'string', format: 'date-time', example: '2024-01-15T09:00:00Z' },
+              enrollment_end_date: { type: 'string', format: 'date-time', example: '2024-01-20T18:00:00Z' },
               status: { type: 'string', enum: [ 'upcoming', 'available', 'past' ], example: 'available' },
               enrolled: { type: 'boolean', example: false },
-              enrollment_count: { type: 'integer', example: 25 },
+              enrollment_count: { type: 'integer', example: 30 },
               created_at: { type: 'string', format: 'date-time', example: '2024-01-10T10:00:00Z' }
             },
-            required: [ 'id', 'type', 'title', 'start_date', 'end_date', 'status', 'enrolled', 'enrollment_count' ]
+            required: [ 'id', 'title', 'enrollment_start_date', 'enrollment_end_date', 'status', 'enrolled', 'enrollment_count', 'created_at' ]
           },
           TestApplicationResponse: {
             type: 'object',

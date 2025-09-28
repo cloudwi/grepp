@@ -1,5 +1,5 @@
 class Api::V1::TestsController < ApplicationController
-  before_action :authenticate_user!, only: [:apply]
+  before_action :authenticate_user!, only: [ :apply ]
   def index
     tests = build_tests_query
     render json: success_response("시험 목록 조회가 완료되었습니다.", tests)
