@@ -12,11 +12,7 @@ class Api::V1::TestsController < Api::V1::BaseController
     result = service.call
     render json: success_response("시험 응시 신청이 완료되었습니다.", result), status: :created
   rescue TestApplicationService::ApplicationError => e
-    render json: error_response(e.message), status: :unprocessable_entity
-  rescue ActiveRecord::RecordInvalid => e
-    render json: error_response("신청 처리 중 오류가 발생했습니다.", e.record.errors.full_messages), status: :unprocessable_entity
-  rescue ActiveRecord::RecordNotFound
-    render json: error_response("시험을 찾을 수 없습니다."), status: :not_found
+    handle_service_error(e)
   end
 
   def complete
@@ -24,7 +20,7 @@ class Api::V1::TestsController < Api::V1::BaseController
     registration = current_user.test_registrations.find_by!(test: test)
 
     if registration.completed?
-      render json: error_response("이미 완료된 시험입니다."), status: :unprocessable_entity
+      handle_service_error(StandardError.new("이미 완료된 시험입니다."))
       return
     end
 
@@ -38,8 +34,6 @@ class Api::V1::TestsController < Api::V1::BaseController
     }
 
     render json: success_response("시험 응시가 완료되었습니다.", result), status: :ok
-  rescue ActiveRecord::RecordNotFound
-    render json: error_response("시험 신청 내역을 찾을 수 없습니다."), status: :not_found
   end
 
   private
