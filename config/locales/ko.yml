@@ -1,6 +1,11 @@
 ko:
   activerecord:
     errors:
+      messages:
+        record_invalid: "검증에 실패했습니다: %{errors}"
+        blank: "을(를) 입력해주세요"
+        not_a_number: "는 숫자가 아닙니다"
+        taken: "이(가) 이미 사용 중입니다"
       models:
         test_registration:
           attributes:

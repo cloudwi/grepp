@@ -22,7 +22,7 @@ RSpec.describe "api/v1/tests", type: :request do
       response(201, "응시 신청 성공") do
         before do
           @user = User.create!(email: "test@example.com", password: "password123")
-          @test = Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now)
+          @test = Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now, price: 50000)
           token = @user.generate_jwt_token
           header "Authorization", "Bearer #{token}"
         end
@@ -44,7 +44,7 @@ RSpec.describe "api/v1/tests", type: :request do
       response(422, "중복 신청") do
         before do
           @user = User.create!(email: "test@example.com", password: "password123")
-          @test = Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now)
+          @test = Test.create!(title: "프로그래밍 시험", start_date: 1.day.from_now, end_date: 2.days.from_now, price: 50000)
           TestRegistration.create!(user: @user, test: @test)
           token = @user.generate_jwt_token
           header "Authorization", "Bearer #{token}"
