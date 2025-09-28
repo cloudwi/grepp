@@ -29,6 +29,12 @@ Grepp 플랫폼의 백엔드 API 서버입니다.
    docker-compose up --build
    ```
 
+   **데이터베이스 초기화가 필요한 경우:**
+   ```bash
+   docker-compose down -v  # 볼륨 포함 완전 삭제
+   docker-compose up --build
+   ```
+
 3. **서비스 접속**
    - API 서버: http://localhost:3000
    - Swagger 문서: http://localhost:3000/api-docs
