@@ -33,7 +33,7 @@ RSpec.configure do |config|
               id: { type: 'integer', example: 1 },
               email: { type: 'string', format: 'email', example: 'user@example.com' }
             },
-            required: ['id', 'email']
+            required: [ 'id', 'email' ]
           },
           UserCreateRequest: {
             type: 'object',
@@ -44,10 +44,10 @@ RSpec.configure do |config|
                   email: { type: 'string', format: 'email', example: 'user@example.com' },
                   password: { type: 'string', example: 'password123' }
                 },
-                required: ['email', 'password']
+                required: [ 'email', 'password' ]
               }
             },
-            required: ['user']
+            required: [ 'user' ]
           },
           SuccessResponse: {
             type: 'object',
@@ -56,7 +56,7 @@ RSpec.configure do |config|
               message: { type: 'string', example: '회원가입이 완료되었습니다.' },
               data: { '$ref' => '#/components/schemas/User' }
             },
-            required: ['status', 'message', 'data']
+            required: [ 'status', 'message', 'data' ]
           },
           LoginRequest: {
             type: 'object',
@@ -67,10 +67,10 @@ RSpec.configure do |config|
                   email: { type: 'string', format: 'email', example: 'user@example.com' },
                   password: { type: 'string', example: 'password123' }
                 },
-                required: ['email', 'password']
+                required: [ 'email', 'password' ]
               }
             },
-            required: ['user']
+            required: [ 'user' ]
           },
           LoginSuccessResponse: {
             type: 'object',
@@ -83,10 +83,10 @@ RSpec.configure do |config|
                   user: { '$ref' => '#/components/schemas/User' },
                   token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
                 },
-                required: ['user', 'token']
+                required: [ 'user', 'token' ]
               }
             },
-            required: ['status', 'message', 'data']
+            required: [ 'status', 'message', 'data' ]
           },
           Test: {
             type: 'object',
@@ -95,9 +95,11 @@ RSpec.configure do |config|
               title: { type: 'string', example: '프로그래밍 기초 시험' },
               start_date: { type: 'string', format: 'date-time', example: '2024-01-15T09:00:00Z' },
               end_date: { type: 'string', format: 'date-time', example: '2024-01-15T12:00:00Z' },
-              status: { type: 'string', enum: ['upcoming', 'available', 'past'], example: 'available' }
+              status: { type: 'string', enum: [ 'upcoming', 'available', 'past' ], example: 'available' },
+              enrollment_count: { type: 'integer', example: 25 },
+              created_at: { type: 'string', format: 'date-time', example: '2024-01-10T10:00:00Z' }
             },
-            required: ['id', 'title', 'start_date', 'end_date', 'status']
+            required: [ 'id', 'title', 'start_date', 'end_date', 'status', 'enrollment_count', 'created_at' ]
           },
           TestsListResponse: {
             type: 'object',
@@ -110,12 +112,24 @@ RSpec.configure do |config|
                   tests: {
                     type: 'array',
                     items: { '$ref' => '#/components/schemas/Test' }
+                  },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      current_page: { type: 'integer', example: 1 },
+                      total_pages: { type: 'integer', example: 5 },
+                      total_count: { type: 'integer', example: 95 },
+                      per_page: { type: 'integer', example: 20 },
+                      has_next_page: { type: 'boolean', example: true },
+                      has_prev_page: { type: 'boolean', example: false }
+                    },
+                    required: [ 'current_page', 'total_pages', 'total_count', 'per_page', 'has_next_page', 'has_prev_page' ]
                   }
                 },
-                required: ['tests']
+                required: [ 'tests', 'pagination' ]
               }
             },
-            required: ['status', 'message', 'data']
+            required: [ 'status', 'message', 'data' ]
           },
           ErrorResponse: {
             type: 'object',
@@ -125,10 +139,10 @@ RSpec.configure do |config|
               errors: {
                 type: 'array',
                 items: { type: 'string' },
-                example: ['Email can\'t be blank', 'Password can\'t be blank']
+                example: [ 'Email can\'t be blank', 'Password can\'t be blank' ]
               }
             },
-            required: ['status', 'message', 'errors']
+            required: [ 'status', 'message', 'errors' ]
           }
         }
       }

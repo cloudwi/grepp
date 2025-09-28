@@ -30,14 +30,118 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/LoginRequest"
+  "/api/v1/courses":
+    get:
+      summary: 코스 목록 조회 (시험 + 수업 통합)
+      tags:
+      - Courses
+      description: 시험과 수업을 통합한 코스 목록을 조회합니다. 검색, 정렬, 필터링을 지원합니다.
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: page
+        in: query
+        description: '페이지 번호 (기본값: 1)'
+        required: false
+        example: 1
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: '페이지당 항목 수 (기본값: 20, 최대: 100)'
+        required: false
+        example: 20
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: 시험/수업 제목으로 검색
+        required: false
+        example: 프로그래밍
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: "상태별 필터링 (available만 지원):\n * `available` \n "
+        required: false
+        enum:
+        - available
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: 정렬 기준 (created=생성일 기준(기본값), popular=인기순)
+        required: false
+        enum:
+        - created
+        - popular
+        schema:
+          type: string
+      responses:
+        '200':
+          description: 코스 목록 조회 성공
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CoursesListResponse"
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
   "/api/v1/tests":
     get:
       summary: 시험 목록 조회
       tags:
       - Tests
-      description: 모든 시험 목록을 조회합니다.
+      description: 시험 목록을 조회합니다. 페이지네이션, 검색, 정렬, 필터링을 지원합니다.
       security:
       - bearer_auth: []
+      parameters:
+      - name: page
+        in: query
+        description: '페이지 번호 (기본값: 1)'
+        required: false
+        example: 1
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: '페이지당 항목 수 (기본값: 20, 최대: 100)'
+        required: false
+        example: 20
+        schema:
+          type: integer
+      - name: search
+        in: query
+        description: 시험 제목으로 검색
+        required: false
+        example: 프로그래밍
+        schema:
+          type: string
+      - name: sort
+        in: query
+        description: "정렬 기준:\n * `created` \n * `popular` \n * `start_date` \n "
+        required: false
+        enum:
+        - created
+        - popular
+        - start_date
+        example: created
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: 상태별 필터링
+        required: false
+        enum:
+        - available
+        - upcoming
+        - past
+        example: available
+        schema:
+          type: string
       responses:
         '200':
           description: 시험 목록 조회 성공
@@ -198,12 +302,21 @@ components:
           - available
           - past
           example: available
+        enrollment_count:
+          type: integer
+          example: 25
+        created_at:
+          type: string
+          format: date-time
+          example: '2024-01-10T10:00:00Z'
       required:
       - id
       - title
       - start_date
       - end_date
       - status
+      - enrollment_count
+      - created_at
     TestsListResponse:
       type: object
       properties:
@@ -220,8 +333,37 @@ components:
               type: array
               items:
                 "$ref": "#/components/schemas/Test"
+            pagination:
+              type: object
+              properties:
+                current_page:
+                  type: integer
+                  example: 1
+                total_pages:
+                  type: integer
+                  example: 5
+                total_count:
+                  type: integer
+                  example: 95
+                per_page:
+                  type: integer
+                  example: 20
+                has_next_page:
+                  type: boolean
+                  example: true
+                has_prev_page:
+                  type: boolean
+                  example: false
+              required:
+              - current_page
+              - total_pages
+              - total_count
+              - per_page
+              - has_next_page
+              - has_prev_page
           required:
           - tests
+          - pagination
       required:
       - status
       - message
