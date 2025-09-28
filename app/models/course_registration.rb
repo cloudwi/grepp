@@ -3,7 +3,7 @@ class CourseRegistration < ApplicationRecord
   belongs_to :course
   has_one :payment, as: :payable, dependent: :destroy
 
-  validates :user_id, uniqueness: { scope: :course_id, message: "이미 신청한 수업입니다." }
+  validates :user_id, uniqueness: { scope: :course_id }
 
   scope :completed, -> { where.not(completed_at: nil) }
   scope :pending, -> { where(completed_at: nil) }

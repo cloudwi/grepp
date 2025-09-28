@@ -1,0 +1,12 @@
+ko:
+  activerecord:
+    errors:
+      models:
+        test_registration:
+          attributes:
+            user_id:
+              taken: "이미 신청한 시험입니다."
+        course_registration:
+          attributes:
+            user_id:
+              taken: "이미 신청한 수업입니다."
