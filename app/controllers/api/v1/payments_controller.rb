@@ -1,6 +1,6 @@
 class Api::V1::PaymentsController < Api::V1::BaseController
   # Set up before_action filters for common operations
-  before_action :set_payment, only: [:cancel]
+  before_action :set_payment, only: [ :cancel ]
 
   def index
     # Delegate search logic to service object with validated parameters

@@ -35,8 +35,8 @@ class Course < ApplicationRecord
   # 가격 범위 검색 (인덱스 활용)
   scope :price_between, ->(min_price, max_price) {
     query = all
-    query = query.where('price >= ?', min_price) if min_price.present?
-    query = query.where('price <= ?', max_price) if max_price.present?
+    query = query.where(price: min_price..) if min_price.present?
+    query = query.where(price: ..max_price) if max_price.present?
     query
   }
 

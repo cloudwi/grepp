@@ -22,8 +22,8 @@ class TestSearchService
   end
 
   def apply_pagination(relation)
-    page = [params[:page].to_i, 1].max
-    per_page = [(params[:per_page] || 20).to_i, 100].min
+    page = [ params[:page].to_i, 1 ].max
+    per_page = [ (params[:per_page] || 20).to_i, 100 ].min
     relation.page(page).per(per_page)
   end
 
